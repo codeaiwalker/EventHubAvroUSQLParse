@@ -1,0 +1,60 @@
+﻿USE DATABASE master;
+
+REFERENCE ASSEMBLY [Newtonsoft.Json];
+REFERENCE ASSEMBLY [Avro]; 
+REFERENCE ASSEMBLY [Microsoft.Analytics.Samples.Formats]; 
+
+// /myeventhub/sweisfelhub/testhub/1/2018/03/28/00/27
+
+/*
+
+https://github.com/Azure/usql/tree/master/Examples/DataFormats/Microsoft.Analytics.Samples.Formats
+https://vincentlauzon.com/2016/01/06/registering-assemblies-in-azure-data-lake-analytics/
+https://anthonychu.ca/post/event-hubs-archive-azure-data-lake-analytics-usql/
+https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-capture-overview?
+
+*/
+
+@rs =
+    EXTRACT Body byte[],
+            date DateTime
+    FROM @"adl://swisfeldls.azuredatalakestore.net/myeventhub/sweisfelhub/testhub/{*}/{date:yyyy}/{date:MM}/{date:dd}/{date:HH}/{date:mm}/{*}.avro"
+    USING new  Microsoft.Analytics.Samples.Formats.ApacheAvro.AvroExtractor(@"
+        {
+            ""type"":""record"",
+            ""name"":""EventData"",
+            ""namespace"":""Microsoft.ServiceBus.Messaging"",
+            ""fields"":[ {
+                ""name"":""SequenceNumber"",
+                ""type"":""long""
+            }, {
+                ""name"":""Offset"",
+                ""type"":""string""
+            }, {
+                ""name"":""EnqueuedTimeUtc"",
+                ""type"":""string""
+            }, {
+                ""name"":""SystemProperties"",
+                ""type"":{""type"":""map"",""values"":[""long"",""double"",""string"",""bytes""]}},
+                {""name"":""Properties"",""type"":{""type"":""map"",""values"":[""long"",""double"",""string"",""bytes""]}},
+                {""name"":""Body"",""type"":[""null"",""bytes""]}
+            ]
+        }
+    ");
+
+
+@jsonLogs =
+    SELECT Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(Encoding.UTF8.GetString(Body), "..*") AS json
+    FROM @rs;
+         
+@logs =
+    SELECT json["Name"] AS Name,
+           json["HappenedAt"] AS HappenedAt
+    FROM @jsonLogs;
+
+//@cnt =
+//    SELECT Name, COUNT(*) AS cnt
+//    FROM @logs
+//    GROUP BY Name;
+
+OUTPUT @logs TO @"adl://swisfeldls.azuredatalakestore.net/myeventhub/logs.csv" USING Outputters.Csv();

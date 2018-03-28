@@ -1,0 +1,62 @@
+// Auto-generated header code
+
+// Auto-generated header code ended
+// User script
+
+USE DATABASE master;
+
+REFERENCE ASSEMBLY [Newtonsoft.Json];
+REFERENCE ASSEMBLY [Avro]; 
+REFERENCE ASSEMBLY [Microsoft.Analytics.Samples.Formats]; 
+
+// /myeventhub/sweisfelhub/testhub/1/2018/03/28/00/27
+
+@rs =
+    EXTRACT Body byte[],
+            date DateTime
+    FROM @"adl://swisfeldls.azuredatalakestore.net/myeventhub/sweisfelhub/testhub/{*}/{date:yyyy}/{date:MM}/{date:dd}/{date:HH}/{date:mm}/{*}.avro"
+    USING new  Microsoft.Analytics.Samples.Formats.ApacheAvro.AvroExtractor(@"
+        {
+            ""type"":""record"",
+            ""name"":""EventData"",
+            ""namespace"":""Microsoft.ServiceBus.Messaging"",
+            ""fields"":[ {
+                ""name"":""SequenceNumber"",
+                ""type"":""long""
+            }, {
+                ""name"":""Offset"",
+                ""type"":""string""
+            }, {
+                ""name"":""EnqueuedTimeUtc"",
+                ""type"":""string""
+            }, {
+                ""name"":""SystemProperties"",
+                ""type"":{""type"":""map"",""values"":[""long"",""double"",""string"",""bytes""]}},
+                {""name"":""Properties"",""type"":{""type"":""map"",""values"":[""long"",""double"",""string"",""bytes""]}},
+                {""name"":""Body"",""type"":[""null"",""bytes""]}
+            ]
+        }
+    ");
+
+
+@jsonLogs =
+    SELECT Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(Encoding.UTF8.GetString(Body), "..*") AS json
+    FROM @rs;
+         
+@logs =
+    SELECT json["Name"] AS Name,
+           json["HappenedAt"] AS HappenedAt
+    FROM @jsonLogs;
+
+@cnt =
+    SELECT Name, COUNT(*) AS cnt
+    FROM @logs
+    GROUP BY Name;
+
+OUTPUT @cnt TO @"\output\myEvents.csv" USING Outputters.Csv();
+
+// User script ended
+// Auto-generated footer code
+
+// Auto-generated footer code ended
+

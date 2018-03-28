@@ -1,0 +1,11 @@
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\obj\Debug\Microsoft.Analytics.Samples.Formats.csprojResolveAssemblyReference.cache
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\obj\Debug\Microsoft.Analytics.Samples.Formats.csproj.CoreCompileInputs.cache
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Microsoft.Analytics.Samples.Formats.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Microsoft.Analytics.Samples.Formats.pdb
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Avro.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\log4net.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Microsoft.Analytics.Interfaces.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Microsoft.Analytics.Types.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\bin\Debug\Newtonsoft.Json.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\obj\Debug\Microsoft.Analytics.Samples.Formats.dll
+C:\Users\sweisfel\Desktop\USQLApplication1\Microsoft.Analytics.Samples.Formats\obj\Debug\Microsoft.Analytics.Samples.Formats.pdb
